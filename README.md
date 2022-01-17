@@ -3,7 +3,7 @@
 ### Stack
 
 - Backend: Golang
-- Frontend: Vue or Svelte
+- Frontend: Some js framework
 
 ### Features
 
