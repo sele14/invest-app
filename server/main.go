@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"server/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -29,11 +28,11 @@ func main() {
 	*/
 
 	// create financial instrument endpoints
-	router.POST("/instrument/create", routes.AddOrder)
-	router.GET("/instrument", routes.GetOrders)
-	router.GET("/instrument/:id/", routes.GetOrderById)
-	router.PUT("/instrument/update/:id", routes.UpdateOrder)
-	router.DELETE("/instrument/delete/:id", routes.DeleteOrder)
+	router.POST("/instrument/create", routes.addInstruments)
+	router.GET("/instrument", routes.getInstruments)
+	router.GET("/instrument/:id/", routes.getInstrumentsById)
+	router.PUT("/instrument/update/:id", routes.updateInstruments)
+	router.DELETE("/instrument/delete/:id", routes.deleteInstruments)
 
 	// run server
 	router.Run(":" + port)
