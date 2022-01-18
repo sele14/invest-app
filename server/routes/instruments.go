@@ -21,8 +21,8 @@ var validate = validator.New()
 // initiate connection
 var instCollection *mongo.Collection = connectCollection(Client, "instruments")
 
+// adds instruments to collection
 func AddInstruments(c *gin.Context) {
-	// adds instruments to collection
 
 	// create context with timeout
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -57,8 +57,8 @@ func AddInstruments(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// gets instruments from collection	
 func GetInstruments(c *gin.Context){
-	// gets instruments from collection	
 	
 	// create context with timeout
 	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -86,24 +86,93 @@ func GetInstruments(c *gin.Context){
 	c.JSON(http.StatusOK, instruments)
 }
 
+// get instrument by ID 
 GetInstrumentsById(c *gin.Context){
+
 	instrumentID := c.Params.ByName("id")
 	docID, _ := primitive.ObjectIDFromHex(instrumentID)
 
-	var ctx, cancel = context.WithTimeout(context.Background(),
-										100*time.Second)
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 	
 	var instrument bson.M
 
     if err := instCollection.FindOne(ctx, bson.M{"_id": docID}).Decode(&instrument); err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+
         return
     }
+
     defer cancel()
 
     fmt.Println(instrument)
 
 	c.JSON(http.StatusOK, instrument)
+}
 
+// update existing instrument by ID
+func UpdateInstruments(c *gin.Context) {
 
+	instrumentID := c.Params.ByName("id")
+	docID, _ := primitive.ObjectIDFromHex(instrumentID)
+
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	
+	var instrument models.Instrument
+
+	if err := c.BindJSON(&instrument); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+
+	// validation
+	validationErr := validate.Struct(instrument)
+	if validationErr != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+		fmt.Println(validationErr)
+		return
+	}
+
+	// update instrument by ID
+	result, err := instCollection.ReplaceOne(
+		ctx,
+		bson.M{"_id": docID},
+		bson.M{
+			"type":  instrument.Type,
+			"name": instrument.Name,
+			"price": instrument.Price,
+			"quantity": instrument.Quantity,
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+
+	defer cancel()
+
+	c.JSON(http.StatusOK, result.ModifiedCount)
+}
+
+// delete instrument by id
+func DeleteInstruments(c * gin.Context){
+	instrumentID := c.Params.ByName("id")
+	docID, _ := primitive.ObjectIDFromHex(instrumentID)
+
+	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+
+	// delete instrument by ID
+	result, err := instCollection.DeleteOne(ctx, bson.M{"_id": docID})
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		fmt.Println(err)
+
+		return
+    }
+	defer cancel()
+    
+	c.JSON(http.StatusOK, result.DeletedCount)
 }
