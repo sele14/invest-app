@@ -87,7 +87,7 @@ func GetInstruments(c *gin.Context){
 }
 
 // get instrument by ID 
-GetInstrumentsById(c *gin.Context){
+func GetInstrumentsById(c *gin.Context){
 
 	instrumentID := c.Params.ByName("id")
 	docID, _ := primitive.ObjectIDFromHex(instrumentID)

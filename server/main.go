@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"server/routes"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,7 @@ import (
 
 
 func main() {
-	port := os.Getnev("PORT")
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
