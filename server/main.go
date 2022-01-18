@@ -28,11 +28,11 @@ func main() {
 	*/
 
 	// create financial instrument endpoints
-	router.POST("/instrument/create", routes.addInstruments)
-	router.GET("/instrument", routes.getInstruments)
-	router.GET("/instrument/:id/", routes.getInstrumentsById)
-	router.PUT("/instrument/update/:id", routes.updateInstruments)
-	router.DELETE("/instrument/delete/:id", routes.deleteInstruments)
+	router.POST("/instrument/create", routes.AddInstruments)
+	router.GET("/instrument", routes.GetInstruments)
+	router.GET("/instrument/:id/", routes.GetInstrumentsById)
+	router.PUT("/instrument/update/:id", routes.UpdateInstruments)
+	router.DELETE("/instrument/delete/:id", routes.DeleteInstruments)
 
 	// run server
 	router.Run(":" + port)
