@@ -3,7 +3,7 @@
 ### Stack
 
 - Backend: Golang
-- Frontend: Some js framework
+- Frontend: React with Typescript
 
 ### Features
 
