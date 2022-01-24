@@ -17,5 +17,9 @@ class Api {
   static async get<ResponseType>(url: string) {
     return await Api.axiosInstance.get(url);
   }
-  static async post<ResponseType, DataType>(url: string, data?: DataType) {}
+  static async post<ResponseType, DataType>(url: string, data?: DataType) {
+    return await Api.axiosInstance.post(url, data);
+  }
 }
+
+export default Api;
